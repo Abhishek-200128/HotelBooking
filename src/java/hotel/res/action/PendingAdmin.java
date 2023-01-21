@@ -1,0 +1,102 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package hotel.res.action;
+
+import hotel.res.user.FetchData;
+import hotel.res.user.FetchDataBean;
+import hotel.res.user.User;
+import java.io.OutputStream;
+import java.sql.Blob;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import org.apache.struts2.ServletActionContext;
+
+/**
+ *
+ * @author abhishek-pt4287
+ */
+public class PendingAdmin {
+  List<FetchDataBean> dataList=null;
+    ResultSet rs=null;
+    FetchData dataObj= null;
+
+    public List<FetchDataBean> getDataList() {
+        return dataList;
+    }
+
+    public void setDataList(List<FetchDataBean> dataList) {
+        this.dataList = dataList;
+    }
+
+    public ResultSet getRs() {
+        return rs;
+    }
+
+    public void setRs(ResultSet rs) {
+        this.rs = rs;
+    }
+
+    public FetchData getDataObj() {
+        return dataObj;
+    }
+
+    public void setDataObj(FetchData dataObj) {
+        this.dataObj = dataObj;
+    }
+    
+    
+    public String execute() throws Exception{
+        HttpServletResponse response = ServletActionContext.getResponse();
+        HttpServletRequest request = ServletActionContext.getRequest();
+        HttpSession session=ServletActionContext.getRequest().getSession(false);
+        String user=session.getAttribute("login").toString();
+        String id = request.getParameter("id");
+        try{
+                dataList=new ArrayList<FetchDataBean>();
+                FetchDataBean dataBean=null;
+                rs=User.fetchPendingAdmin(user);
+                if(rs!=null){
+                    while(rs.next()){
+                        dataBean=new FetchDataBean();
+                        dataBean.setId(rs.getInt(1));
+                        dataBean.setName(rs.getString(2));
+                        dataBean.setState(rs.getString(3));
+                        dataBean.setAddress(rs.getString(4));
+                        dataBean.setPincode(rs.getInt(5));
+                        dataBean.setLat(rs.getFloat(6));
+                        dataBean.setLongi(rs.getFloat(7));
+                        dataBean.setPhone(rs.getInt(8));
+                        dataList.add(dataBean);
+                    }
+                }
+                
+                try{
+                rs=User.getHotelPic(Integer.parseInt(id));
+                        if(rs.next()){
+                            Blob ph=rs.getBlob(1);
+                            if(ph!=null){
+                            byte data[] = ph.getBytes(1, (int) ph.length());
+                            OutputStream out1=response.getOutputStream();
+                                    out1.write(data);
+                            out1.flush();
+                            out1.close();}
+                        }
+                }catch(Exception e){
+                    e.printStackTrace();
+                    e.getMessage();
+                }
+            
+            
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return "SUCCESS";
+    }  
+}

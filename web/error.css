@@ -1,0 +1,26 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 17 Oct, 2021, 12:11:54 PM
+    Author     : abhishek-pt4287
+*/
+
+.errorMessage {
+color: red;
+font-size: 0.8em;
+} 
+.my-form.fv-plugins-bootstrap .fv-help-block {
+    color: #f39c12;
+}
+.my-form.fv-plugins-bootstrap .has-danger .fv-plugins-icon {
+    color: #f39c12;
+}
+.my-form.fv-plugins-bootstrap .has-success .fv-plugins-icon {
+    color: #18bc9c;
+}
+form .error {
+  color: #ff0000;
+}
